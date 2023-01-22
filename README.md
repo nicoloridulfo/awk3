@@ -2,18 +2,20 @@
 
 With awk3 you can write advanced text processing code using python.
 
+## Installation
+`pip install git+https://github.com/nicoloridulfo/awk3.git`
 ## Examples:
 
 ### Increment all numbers in the text files
 A command to run `int(m[0]) + 1` on every match of `(\d+)` in all `.txt` files:
 
-`$ find *.txt | xargs -I{} ./awk3 {} "(\d+)" "int(m[0]) + 1"`
+`$ find *.txt | xargs -I{} awk3 {} "(\d+)" "int(m[0]) + 1"`
 
 ### Capitalize all week days
-`$ ./awk3 weekdays.txt "([a-zA-Z]+day)" "m[0].capitalize()"`
+`$ awk3 weekdays.txt "([a-zA-Z]+day)" "m[0].capitalize()"`
 
 
-## Help `./awk --help`
+## Help `awk --help`
 
 ```
 NAME
@@ -32,7 +34,7 @@ DESCRIPTION
     Adam, 23
     Bob, 24
     Charlie, 25
-    $ ./awk3 file.txt "(\d+)" "int(m[0]) + 1"
+    $ awk3 file.txt "(\d+)" "int(m[0]) + 1"
     Adam, 24
     Bob, 25
     Charlie, 26
