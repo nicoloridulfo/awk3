@@ -37,7 +37,7 @@ def main(path=".", pattern="", code=""):
     assert code != "", "replacement python code is empty"
 
     if not os.path.isfile(path):
-        print("path is not a file")
+        print(f"path {path} is not a file")
         exit(1)
 
     with open(path, "r") as f:
