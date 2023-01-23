@@ -1,7 +1,10 @@
 #!env/bin/python
 import re
-import fire
 import os
+import sys
+import argparse
+
+# https://docs.python.org/3/library/argparse.html
 
 
 def repl_func(match, repl) -> str:
@@ -12,36 +15,45 @@ def repl_func(match, repl) -> str:
     return str(eval(str(repl)))
 
 
-def main(path=".", pattern="", code=""):
-    """
-    Takes a path to a file, a pattern to match and a replacer (python code).
-    Prints the file with the replacement to stdout,
+def main():
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description="""A simple awk implementation
 
-    The "pattern" is a regex pattern that will be matched against the file.
-    The "code" is a python code that will be evaluated for every match. The python
-    code can use the variable `m` which is a tuple of the matched groups.
+Takes a file or stdin, a pattern and some python code.
+Outputs the processed text to stdout.
 
-    Example:
-    $ cat file.txt
-    Adam, 23
-    Bob, 24
-    Charlie, 25
-    $ ./awk3 file.txt "(\d+)" "int(m[0]) + 1"
-    Adam, 24
-    Bob, 25
-    Charlie, 26
+The "pattern" is a regex pattern that will be matched against the file.
+The "code" is python code that will be evaluated for every match. The python
+code has access to a local variable `m` which is a tuple of the matched groups.
 
-    """
-    assert path != "", "path is empty"
-    assert pattern != "", "pattern is empty"
-    assert code != "", "replacement python code is empty"
+Example:
+$ cat file.txt
+Adam, 23
+Bob, 24
+Charlie, 25
+$ awk3 file.txt "(\d+)" "int(m[0]) + 1"
+Adam, 24
+Bob, 25
+Charlie, 26
 
-    if not os.path.isfile(path):
-        print(f"path {path} is not a file")
-        exit(1)
+""")
 
-    with open(path, "r") as f:
-        print(re.sub(pattern, lambda match: repl_func(match, code), f.read()))
+    parser.add_argument("-f", help="path to file")
+    parser.add_argument("pattern", help="pattern to match")
+    parser.add_argument("code", help="python code to calculate replacement")
+    args = parser.parse_args()
 
-if __name__ == "__main__":
-    fire.Fire(main)
+    if not sys.stdin.isatty():
+        text = sys.stdin.read()
+    else:
+        if args.f:
+            with open(args.f) as f:
+                text = f.read()
+        else:
+            print("No file or stdin")
+            sys.exit(1)
+
+    pattern = args.pattern
+    code = args.code
+    print(re.sub(pattern, lambda match: repl_func(match, code), text), end="")

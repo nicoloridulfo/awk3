@@ -3,47 +3,54 @@
 With awk3 you can write advanced text processing code using python.
 
 ## Installation
+
 `pip install git+https://github.com/nicoloridulfo/awk3.git`
+
 ## Examples:
 
 ### Increment all numbers in the text files
+
 A command to run `int(m[0]) + 1` on every match of `(\d+)` in all `.txt` files:
 
-`$ find *.txt | xargs -I{} awk3 {} "(\d+)" "int(m[0]) + 1"`
+`find *.txt | xargs cat | awk3 "(\d+)" "int(m[0]) + 1"`
 
 ### Capitalize all week days
-`$ awk3 weekdays.txt "([a-zA-Z]+day)" "m[0].capitalize()"`
 
+`cat weekdays.txt | awk3 "([a-zA-Z]+day)" "m[0].capitalize()"`
 
-## Help `awk --help`
+or
+
+`awk3 -f weekdays.txt "([a-zA-Z]+day)" "m[0].capitalize()"`
+
+## Help `awk3 --help`
 
 ```
-NAME
-    awk3 - Takes a path to a file, a pattern to match and a replacer (python code). Prints the file with the replacement to stdout,
+usage: awk3 [-h] [-f F] pattern code
 
-SYNOPSIS
-    awk3 <flags>
+A simple awk implementation
 
-DESCRIPTION
-    The "pattern" is a regex pattern that will be matched against the file.
-    The "code" is a python code that will be evaluated for every match. The python
-    code can use the variable `m` which is a tuple of the matched groups.
+Takes a file or stdin, a pattern and some python code.
+Outputs the processed text to stdout.
 
-    Example:
-    $ cat file.txt
-    Adam, 23
-    Bob, 24
-    Charlie, 25
-    $ awk3 file.txt "(\d+)" "int(m[0]) + 1"
-    Adam, 24
-    Bob, 25
-    Charlie, 26
+The "pattern" is a regex pattern that will be matched against the file.
+The "code" is python code that will be evaluated for every match. The python
+code has access to a local variable `m` which is a tuple of the matched groups.
 
-FLAGS
-    --path=PATH
-        Default: '.'
-    --pattern=PATTERN
-        Default: ''
-    -c, --code=CODE
-        Default: ''
+Example:
+$ cat file.txt
+Adam, 23
+Bob, 24
+Charlie, 25
+$ awk3 file.txt "(\d+)" "int(m[0]) + 1"
+Adam, 24
+Bob, 25
+Charlie, 26
+
+positional arguments:
+  pattern     pattern to match
+  code        python code to calculate replacement
+
+options:
+  -h, --help  show this help message and exit
+  -f F        path to file
 ```
