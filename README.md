@@ -4,7 +4,7 @@ With awk3 you can write advanced text processing code using python.
 
 ## Installation
 
-`pip install git+https://github.com/nicoloridulfo/awk3.git`
+`pip install git+https://github.com/ridulfo/awk3.git`
 
 ## Examples:
 
